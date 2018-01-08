@@ -42,6 +42,7 @@ group :development, :test do
   gem 'capybara', '~> 2.13'
   gem 'selenium-webdriver'
   gem 'rspec-rails'
+  gem 'rails-controller-testing'
   gem 'factory_bot_rails'
   gem 'guard-rspec'
   gem 'spring-commands-rspec'

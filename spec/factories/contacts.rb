@@ -10,5 +10,9 @@ FactoryBot.define do
           phone_type: phone, contact: contact)
       end
     end
+
+    factory :invalid_contact do
+      firstname nil
+    end
   end
 end
