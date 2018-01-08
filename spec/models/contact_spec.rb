@@ -1,10 +1,9 @@
 require 'rails_helper'
 
 describe Contact do
-  # 姓と名とメールがあれば有効な状態であること
+  # 有効なファクトリを持つこと
   it "is valid with a firstname, lastname and email" do
-    contact = create(:contact)
-    expect(contact).to be_valid
+    expect(build(:contact)).to be_valid
   end
 
   # 名が無ければ、無効な状態であること
@@ -40,6 +39,11 @@ describe Contact do
   it "returns a contact's full name as a string" do
     contact = create(:contact, firstname: "Jhon", lastname: "Smith")
     expect(contact.name).to eq "Jhon Smith"
+  end
+
+  # 3つの電話番号を持つこと
+  it "has three phone number" do
+    expect(create(:contact).phones.count).to eq 3
   end
 
   # 文字で姓をフィルタする
