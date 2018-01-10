@@ -47,6 +47,7 @@ group :development, :test do
   gem 'guard-rspec'
   gem 'spring-commands-rspec'
   gem 'pry-rails'
+  gem "poltergeist"         #capybaraのためのドライバ
 end
 
 group :development do
