@@ -2,14 +2,9 @@ require 'rails_helper'
 
 feature 'User management' do
   # 新しいユーザーを追加する
-  scenario "adds a new user" do
+  scenario "adds a new user", js: true do
     admin = create(:admin)
-
-    visit root_path
-    click_link 'Log In' # プレーンテキストの探索を行っている
-    fill_in 'Email', with: admin.email # プレーンテキストの探索を行って、そこに入力を行っている
-    fill_in 'Password', with: admin.password
-    click_button 'Log In'
+    sign_in admin
 
     visit root_path
     expect{
