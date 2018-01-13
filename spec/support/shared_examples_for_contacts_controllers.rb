@@ -36,17 +36,24 @@ shared_examples_for 'public access to contacts' do
   end
 
   describe "GET #show" do
+    let(:contact) { build_stubbed(:contact, firstname: 'Lawrence', lastname: 'Smith') }
+
+    before :each do
+      allow(contact).to receive(:persisted?).and_return(true)
+      allow(Contact).to receive(:order).with('lastname, firstname').and_return([contact])
+      allow(Contact).to receive(:find).with(contact.id.to_s).and_return(contact)
+      allow(contact).to receive(:save).and_return(true)
+
+      get :show, params: { id: contact }
+    end
+
     # @contact に要求された連絡先を割り当てること
     it "assigns the requested contact to @contact" do
-      contact = create(:contact)
-      get :show, params: { id: contact }
       expect(assigns(:contact)).to eq contact
     end
 
     # :show テンプレートを表示すること
     it "renders the :show template" do
-      contact = create(:contact)
-      get :show, params: { id: contact }
       expect(response).to render_template :show
     end
   end
