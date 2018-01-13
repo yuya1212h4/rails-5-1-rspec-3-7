@@ -1,6 +1,25 @@
 require "rails_helper"
 
 describe ContactsController do
+  let(:admin) { build_stubbed(:admin) }
+  let(:user) { build_stubbed(:user) }
+
+  let(:contact) do
+    create(:contact, firstname: 'Lawrence', lastname: 'Smith')
+  end
+
+  let(:phones) do
+    [
+      attributes_for(:phone, phone_type: "home"),
+      attributes_for(:phone, phone_type: "office"),
+      attributes_for(:phone, phone_type: "mobile")
+    ]
+  end
+
+  let(:valid_attributes) { attributes_for(:contact) }
+  let(:invalid_attributes) { attributes_for(:invalid_contact) }
+
+
   describe "administrator access" do
     before :each do
       set_user_session create(:admin)
