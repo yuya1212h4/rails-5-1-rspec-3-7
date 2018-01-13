@@ -92,13 +92,14 @@ shared_examples 'full access to contacts' do
   end
 
   describe "POST #create" do
-    before :each do
-      @phones = [
-        attributes_for(:phone),
-        attributes_for(:phone),
-        attributes_for(:phone)
+    let(:phones) do
+      [
+        attributes_for(:phone, phone_type: "home"),
+        attributes_for(:phone, phone_type: "office"),
+        attributes_for(:phone, phone_type: "mobile")
       ]
     end
+
     # 有効な属性の場合
     context "with valid attributes" do
       # データベースに新しい連絡先を保存すること
@@ -106,14 +107,14 @@ shared_examples 'full access to contacts' do
         # binding.pry
         expect{
           post :create, params: { contact: attributes_for(:contact,
-            phones_attributes: @phones) }
+            phones_attributes: phones) }
         }.to change(Contact, :count).by(1)
       end
 
       # contacts#show にリダイレクトすること
       it "redirects to contacts #show" do
         post :create, params: { contact: attributes_for(:contact,
-          phones_attributes: @phones)}
+          phones_attributes: phones)}
         expect(response).to redirect_to contact_path(assigns[:contact])
       end
     end
@@ -136,73 +137,74 @@ shared_examples 'full access to contacts' do
   end
 
   describe 'PATCH #update' do
-    before :each do
-      @contact = create(:contact,
-        firstname: 'Lawrence',
-        lastname: 'Smith'
-      )
+    let(:contact) do
+      create(:contact, firstname: 'Lawrence', lastname: 'Smith')
     end
 
     context "valid attributes" do
       it "locates the requested @contact" do
-        patch :update, params: { id: @contact, contact: attributes_for(:contact) }
-        expect(assigns(:contact)).to eq @contact
+        patch :update, params: { id: contact, contact: attributes_for(:contact) }
+        expect(assigns(:contact)).to eq contact
       end
 
       it "changes the contact's attributes" do
-        patch :update, params: { id: @contact,
+        patch :update, params: { id: contact,
           contact: attributes_for(:contact,
             firstname: 'Larry',
             lastname: 'Smith'
           ) }
-        @contact.reload
-        expect(@contact.firstname).to eq 'Larry'
-        expect(@contact.lastname).to eq 'Smith'
+        contact.reload
+        expect(contact.firstname).to eq 'Larry'
+        expect(contact.lastname).to eq 'Smith'
       end
 
       it "redirects to the updated contact" do
-        patch :update, params: { id: @contact, contact: attributes_for(:contact) }
-        expect(response).to redirect_to @contact
+        patch :update, params: { id: contact, contact: attributes_for(:contact) }
+        expect(response).to redirect_to contact
       end
     end
 
     context "invalid attributes" do
       it "locates the requested @contact" do
-        patch :update, params: { id: @contact, contact: attributes_for(:invalid_contact) }
-        expect(assigns(:contact)).to eq @contact
+        patch :update, params: { id: contact, contact: attributes_for(:invalid_contact) }
+        expect(assigns(:contact)).to eq contact
       end
 
       it "does not change the contact's attributes" do
-        patch :update, params: { id: @contact,
+        patch :update, params: { id: contact,
           contact: attributes_for(:contact,
             firstname: 'Larry',
             lastname: nil
           ) }
-        @contact.reload
-        expect(@contact.firstname).not_to eq('Larry')
-        expect(@contact.lastname).to eq('Smith')
+        contact.reload
+        expect(contact.firstname).not_to eq('Larry')
+        expect(contact.lastname).to eq('Smith')
       end
 
       it "re-renders the edit method" do
-        patch :update, params: { id: @contact, contact: attributes_for(:invalid_contact) }
+        patch :update, params: { id: contact, contact: attributes_for(:invalid_contact) }
         expect(response).to render_template :edit
       end
     end
   end
 
   describe 'DELETE #destroy' do
-    before :each do
-      @contact = create(:contact)
-    end
+    let(:contact){ create(:contact) }
+
+    # before :each do
+    #   @contact = create(:contact)
+    # end
 
     it "deletes the contact" do
+      contact
       expect{
-        delete :destroy, params: { id: @contact }
+        delete :destroy, params: { id: contact }
       }.to change(Contact,:count).by(-1)
     end
 
     it "redirects to contacts#index" do
-      delete :destroy, params: { id: @contact }
+      contact
+      delete :destroy, params: { id: contact }
       expect(response).to redirect_to contacts_url
     end
   end
