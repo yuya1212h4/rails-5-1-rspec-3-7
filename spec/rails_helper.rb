@@ -39,6 +39,9 @@ RSpec.configure do |config|
   # Include custom login macros
   config.include LoginMacros
 
+  # focus: true を追加することで、そのspecのみを実行することが出来る
+  # config.filter_run focus: true
+
   # Configure DatabaseCleaner to reset data between tests
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
@@ -79,4 +82,8 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  # Shouldaのカスタムマッチャを使うための設定
+  config.include(Shoulda::Matchers::ActiveModel, type: :model)
+  config.include(Shoulda::Matchers::ActiveRecord, type: :model)
 end
